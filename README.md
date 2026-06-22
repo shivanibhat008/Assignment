@@ -6,6 +6,7 @@ This repository contains the production-ready Infrastructure as Code (IaC) bluep
 # Architecture Overview
 To balance the conflicting constraints of strict data isolation (keeping PII and heavy media assets locked within regional Aurora databases) and ultra-low latency global monitoring, this platform implements a **CQRS (Command Query Responsibility Segregation) pattern handled at the compute layer over a private VPC Peering network.**
 
+ ```
                                   [ PRIVATE VPC PEERING TUNNEL ]
                                                 │
  ┌────────────────────────────────────────┐     │     ┌────────────────────────────────────────┐
@@ -26,6 +27,7 @@ To balance the conflicting constraints of strict data isolation (keeping PII and
  │  └────────────────────────┘            │     │
  └────────────────────────────────────────┘     │
 
+```
 
 
 # Core Architecture Highlights:
@@ -35,7 +37,7 @@ To balance the conflicting constraints of strict data isolation (keeping PII and
 **The Central Hub Ingestion:** The request is captured privately by the Lambda in the Hub VPC, which writes the metadata into a centralized **Amazon DynamoDB** table via a secure **VPC Gateway Endpoint**.
 **The High-Speed Read Path:** Internal operations engineers querying the dashboard read exclusively from the centralized DynamoDB table. This guarantees sub-millisecond query responses and isolates the transactional regional databases from read-heavy traffic spikes, preventing connection-pool exhaustion.
 
-# Key Architectural Decisions & Trade-offs (ADR)
+# Key Architectural Decisions & Trade-offs
 
 # 1. Why Application-Level Proxy Over EventBridge/others?
 
@@ -48,6 +50,7 @@ DynamoDB Global Tables are effective for multi-region active-active setups but c
 # Directory Structure
 This codebase adopts a modular, DRY (Don't Repeat Yourself) layout, separating reusable factory definitions from live operational states.
 
+```text
 .
 ├── modules/
 │   ├── networking/             # Generic VPC factory module
@@ -65,6 +68,9 @@ This codebase adopts a modular, DRY (Don't Repeat Yourself) layout, separating r
         ├── central_cache.tf    # NoSQL data-store and VPC Gateway Endpoint locks
         └── variables.tf        # Production variable orchestrator
 
+```
+
+---
 
 # Prerequisites & CI/CD Pipeline Assumptions
 
