@@ -101,30 +101,23 @@ Initialize the state and deploy it.
 
 ```bash
 terraform init
+terraform init -backend-config=backend.hcl
 terraform apply --auto-approve
 
 ```
 
-### Step 3: Initialize Regional Spoke Parameters
+Create a standard .hcl (HashiCorp Configuration Language) file that holds the specific values for this environment. This file is often generated dynamically by a CI/CD pipeline (like GitHub Actions or GitLab CI) before Terraform runs.
 
-Navigate to the Spoke environment tier:
-
-```bash
-cd ../spoke_eu_west_1/
-touch terraform.tfvars
-
-```
-
-### Step 4: Deploy Regional Spoke Infrastructure
-
-Deploy the Spoke. This will automatically attach the Fargate compute layer to the local DynamoDB replica established by the Hub's Global Table configuration.
+File: env/prod/backend.hcl. Sample values:
 
 ```bash
-terraform init
-terraform apply --auto-approve
+bucket         = "my-terraform-state-prod"
+key            = "transit-mesh/prod/terraform.tfstate"
+region         = "eu-central-1"
+dynamodb_table = "my-terraform-state-locks"
+encrypt        = true
 
 ```
-
 ## Security & Isolation Controls
 
 This architecture enforces an uncompromising **Zero-Trust Network Perimeter**:
