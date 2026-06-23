@@ -62,19 +62,20 @@ This codebase adopts a modular, DRY layout, separating reusable factory definiti
 ```text
 .
 ├── modules/
-│   ├── networking/             # Generic VPC factory, Gateway Endpoints, Subnets
-│   ├── compute/                # ECS Fargate clusters, AWS Lambda Router
-│   ├── data/                   # DynamoDB Global Tables (with replicas)
-│   └── security/               # IAM Execution Roles, Security Group boundaries
-└── env/
-    └── prod/                   # Live root deployment tier
-        ├── hub_eu_central_1/   # Global Access deployment (DynamoDB Master)
-        ├── spoke_eu_west_1/    # Regional Ingress deployment (DynamoDB Replica)
-        └── _global/            # Route53 / Global Accelerator configurations
-
+│   ├── vpc/                    # Multi-AZ VPC foundation, Subnets, Gateway Endpoints
+│   ├── security/               # IAM Execution Roles, Zero-Trust Layer 4 Security Groups
+│   └── peering/                # Cross-Region Mesh, Route Injection, Cross-VPC DNS
+└── live/
+    └── prod/                   # Live production deployment tier
+        ├── backend.tf          # Partial backend configuration (S3/DynamoDB)
+        ├── backend.hcl         # Environment-specific backend variables
+        ├── providers.tf        # Multi-region AWS alias configurations
+        ├── variables.tf        # Strict type constraints and descriptions
+        ├── main.tf             # Root monolithic orchestrator (instantiates modules)
+        ├── outputs.tf          # Surfaced infrastructure IDs for downstream pipelines
+        └── terraform.tfvars    # Runtime variable declarations (Ignored in VCS)
 ```
 
----
 
 ## Prerequisites & CI/CD Pipeline Assumptions
 
@@ -83,28 +84,34 @@ Before deploying this architecture, verify the following prerequisites are met:
 1. **Terraform CLI:** Version `1.5.x` or higher installed locally or in your deployment runner.
 2. **Multi-Account IAM Provisioning:** The execution profile in the Central Hub account must have authorization to call `sts:AssumeRole` targeting the Spoke account's cross-account deployment execution role.
 3. **Deployment Order:** The Central Hub **must** be deployed prior to the Regional Spokes to successfully provision the DynamoDB Master Table and register the subsequent Spoke regions as valid replicas.
+4. * **Bootstrapping Note for Reviewers:** To deploy this architecture locally for evaluation without a pre-existing S3 state bucket, temporarily comment out the contents of `backend.tf` to utilize local state, or provision an S3 bucket and DynamoDB table matching the values in `backend.hcl` prior to initialization.
+
 
 ## Deployment Instructions
 
-### Step 1: Initialize Central Hub Parameters
+This repository utilizes a **Partial Backend Configuration** to ensure the Terraform code remains completely environment-agnostic. State locking is enforced via DynamoDB to prevent concurrent pipeline execution corruption.
 
-Navigate to the Central Hub environment tier and configure your `terraform.tfvars` file. Don't commit your .tfvars file:
+### Step 1: Configure Authentication
+
+Export your target AWS credentials to your environment terminal:
 
 ```bash
-cd env/prod
-touch terraform.tfvars
+export AWS_ACCESS_KEY_ID="<your-access-key>"
+export AWS_SECRET_ACCESS_KEY="<your-secret-key>"
+export AWS_DEFAULT_REGION="<region-of-your-choice"
 
 ```
 
+### Step 2: Initialize Environment Parameters
 
-Initialize the state and deploy it.
+Navigate to the root environment tier and review the secure `terraform.tfvars` file. Ensure the non-overlapping CIDR blocks and target regions are correct for the Hub and Spoke.
 
 ```bash
-terraform init
-terraform init -backend-config=backend.hcl
-terraform apply --auto-approve
+cd live/prod/
 
 ```
+
+### Step 3: Enterprise Initialization (Partial Backend)
 
 Create a standard .hcl (HashiCorp Configuration Language) file that holds the specific values for this environment. This file is often generated dynamically by a CI/CD pipeline (like GitHub Actions or GitLab CI) before Terraform runs.
 
@@ -113,11 +120,36 @@ File: env/prod/backend.hcl. Sample values:
 ```bash
 bucket         = "my-terraform-state-prod"
 key            = "transit-mesh/prod/terraform.tfstate"
-region         = "eu-central-1"
+region         = "<region-of-your-choice>"
 dynamodb_table = "my-terraform-state-locks"
 encrypt        = true
 
 ```
+Initialize the Terraform working directory, explicitly injecting the backend configuration file. This securely maps the state to the remote S3 bucket.
+
+```bash
+terraform init -backend-config=backend.hcl
+
+```
+
+### Step 4: Infrastructure Verification
+
+Execute a dry-run plan. This validates the multi-provider alias bindings, cross-region VPC Peering handshakes, and strict Layer 4 Security Group syntax without modifying live infrastructure.
+
+```bash
+terraform plan
+
+```
+
+### Step 5: Provision the Zero-Trust Mesh
+
+Deploy the cross-region network mesh and security boundaries. The root module will construct the dependency graph natively in-memory, ensuring base VPCs are provisioned before attempting to establish the peering tunnels or endpoint routing.
+
+```bash
+terraform apply -auto-approve
+
+```
+
 ## Security & Isolation Controls
 
 This architecture enforces an uncompromising **Zero-Trust Network Perimeter**:
