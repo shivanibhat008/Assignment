@@ -2,7 +2,7 @@
 
 # Global Observability Platform
 
-This repository contains the production-ready Infrastructure as Code (IaC) blueprint for a highly secure, cross-region, multi-account networking architecture. The design optimizes for a **99.9999% read availability SLA** and sub-millisecond dashboard queries while strictly enforcing regional data residency compliance (GDPR/Data Sovereignty boundaries) and leaving existing regional database systems entirely isolated from operational read traffic.
+This repository contains Infrastructure as Code (IaC) blueprint for a highly secure, cross-region, multi-account networking architecture. The design optimizes for a **99.9999% read availability SLA** and sub-millisecond dashboard queries while strictly enforcing regional data residency compliance (GDPR/Data Sovereignty boundaries) and leaving existing regional database systems entirely isolated from operational read traffic.
 
 ## Architecture Overview
 
