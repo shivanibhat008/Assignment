@@ -166,3 +166,8 @@ This architecture enforces an uncompromising **Zero-Trust Network Perimeter**:
 * **No Internet Intermediaries:** All backend communications occur purely over the private AWS backbone infrastructure. Subnets are deployed without Internet Gateways or NAT Gateways, completely mitigating public scanning vectors.
 * **Prefix-List Routing Interceptions:** Both the Central Hub and Regional Spokes utilize AWS Managed Prefix Lists applied to VPC Gateway Endpoints. Compute resources reading or writing metadata to DynamoDB are intercepted natively by the VPC router, keeping all NoSQL traffic strictly off the public internet.
 * **Strict Security Group Demarcation:** Ingress traffic rules on the Spoke ALB explicitly restrict access based on the exact peered Hub CIDR block notation (eg: `10.0.0.0/16` on Port 443), physically preventing cross-tenant lateral movement.
+
+Terraform has a strict, hardcoded limitation: You cannot dynamically generate providers using a for_each or count loop. Because a VPC Peering connection requires authenticating against two different AWS regions simultaneously, you must use explicit provider aliases. Terraform requires every single provider alias to be physically written out in the root providers.tf file before the code executes. You cannot pass a list like ["us-east-1", "ap-northeast-1"] and expect Terraform to figure out the authentication.
+
+## How to Actually Scale for Multiple Regions
+To peer your Central Hub with multiple Spoke regions, you must explicitly declare a new provider for every new region, and then explicitly call the Spoke Network and Peering modules for each one.
