@@ -1,6 +1,6 @@
 ---
 
-# Global Observability & Event Ingress Platform
+# Global Observability Platform
 
 This repository contains the production-ready Infrastructure as Code (IaC) blueprint for a highly secure, cross-region, multi-account networking architecture. The design optimizes for a **99.9999% read availability SLA** and sub-millisecond dashboard queries while strictly enforcing regional data residency compliance (GDPR/Data Sovereignty boundaries) and leaving existing regional database systems entirely isolated from operational read traffic.
 
@@ -107,7 +107,7 @@ export AWS_DEFAULT_REGION="<region-of-your-choice"
 Navigate to the root environment tier and review the secure `terraform.tfvars` file. Ensure the non-overlapping CIDR blocks and target regions are correct for the Hub and Spoke.
 
 ```bash
-cd live/prod/
+cd env/prod/
 
 ```
 
@@ -141,7 +141,16 @@ terraform plan
 
 ```
 
-### Step 5: Provision the Zero-Trust Mesh
+### Step 5: Infrastructure Validation
+
+Always format the HCL code and mathematically validate the syntax. This ensures the configuration is syntactically sound before reaching out to the AWS API.
+
+```bash
+terraform validate 
+terraform fmt
+```
+
+### Step 6: Provision the Zero-Trust Mesh
 
 Deploy the cross-region network mesh and security boundaries. The root module will construct the dependency graph natively in-memory, ensuring base VPCs are provisioned before attempting to establish the peering tunnels or endpoint routing.
 
