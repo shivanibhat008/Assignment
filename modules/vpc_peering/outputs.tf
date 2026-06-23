@@ -1,9 +1,14 @@
-output "vpc_peering_connection_id" {
-  description = "The ID of the VPC Peering Connection"
-  value       = aws_vpc_peering_connection.hub_to_spoke.id
+output "peering_connection_id" {
+  description = "The ID of the established, active cross-region VPC Peering Connection."
+  value       = aws_vpc_peering_connection.mesh.id
 }
 
-output "vpc_peering_accept_status" {
-  description = "The acceptance status of the VPC Peering Connection"
-  value       = aws_vpc_peering_connection_accepter.spoke_accepts.accept_status
+output "hub_route_id" {
+  description = "The ID of the route injected into the Hub's route table."
+  value       = aws_route.hub_to_spoke.id
+}
+
+output "spoke_route_id" {
+  description = "The ID of the route injected into the Spoke's route table."
+  value       = aws_route.spoke_to_hub.id
 }
