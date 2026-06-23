@@ -88,19 +88,16 @@ Before deploying this architecture, verify the following prerequisites are met:
 
 ### Step 1: Initialize Central Hub Parameters
 
-Navigate to the Central Hub environment tier and configure your `terraform.tfvars` file:
+Navigate to the Central Hub environment tier and configure your `terraform.tfvars` file. Don't commit your .tfvars file:
 
 ```bash
-cd env/prod/hub_eu_central_1/
+cd env/prod
 touch terraform.tfvars
 
 ```
 
-Populate the Hub configuration details
 
-### Step 2: Deploy Central Hub Infrastructure
-
-Initialize the state and deploy the Hub. This provisions the Master DynamoDB table and network scaffolding.
+Initialize the state and deploy it.
 
 ```bash
 terraform init
@@ -117,8 +114,6 @@ cd ../spoke_eu_west_1/
 touch terraform.tfvars
 
 ```
-
-Populate the Spoke configuration details (ensuring non-overlapping CIDRs):
 
 ### Step 4: Deploy Regional Spoke Infrastructure
 
