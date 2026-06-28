@@ -4,7 +4,7 @@
 variable "project_name" {
   description = "The primary project identifier."
   type        = string
-  default     = "protex"
+  default     = "assignment"
 }
 
 variable "environment" {
@@ -40,7 +40,15 @@ variable "hub_azs" {
   description = "A list of Availability Zones for the Hub deployment."
   type        = list(string)
 }
+variable "hub_role_arn" {
+  description = "IAM role assumed in the Hub AWS account"
+  type        = string
+}
 
+variable "spoke_role_arn" {
+  description = "IAM role assumed in the Spoke AWS account"
+  type        = string
+}
 # ------------------------------------------------------------------------------
 # REGIONAL SPOKE VARIABLES (e.g., eu-west-1)
 # ------------------------------------------------------------------------------
