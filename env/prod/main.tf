@@ -12,16 +12,6 @@ module "hub_vpc" {
   availability_zones   = var.hub_azs
 }
 
-module "spoke_vpc" {
-  source = "../../modules/vpc"
-  providers = { aws = aws.spoke }
-
-  project_name         = var.project_name
-  environment          = var.environment
-  vpc_cidr             = var.spoke_vpc_cidr
-  private_subnet_cidrs = var.spoke_private_subnets
-  availability_zones   = var.spoke_azs
-}
 
 # ==========================================
 # 2. SECURITY: ZERO-TRUST BOUNDARIES & IAM
@@ -38,20 +28,8 @@ module "hub_security" {
   dynamodb_table_name = var.dynamodb_table_name
 }
 
-module "spoke_security" {
-  source = "../../modules/security"
-  providers = { aws = aws.spoke }
-
-  project_name        = var.project_name
-  environment         = var.environment
-  hub_vpc_id          = module.hub_vpc.vpc_id
-  hub_vpc_cidr        = var.hub_vpc_cidr
-  spoke_vpc_id        = module.spoke_vpc.vpc_id
-  dynamodb_table_name = var.dynamodb_table_name
-}
-
 # ==========================================
-# 3. TRANSIT: CROSS-REGION PEERING MESH
+# 2. TRANSIT: CROSS-REGION PEERING MESH
 # ==========================================
 module "germany_peering" {
   source = "../../modules/vpc_peering"
@@ -91,5 +69,5 @@ module "france_peering" {
   spoke_vpc_id         = var.germany_vpc_id
   spoke_vpc_cidr       = var.germany_cidr
   spoke_route_table_id = var.germany_route_table
-  spoke_region         = "eu-central-1"
+  spoke_region         = "eu-west-3"
 }
