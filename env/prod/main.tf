@@ -72,3 +72,24 @@ module "germany_peering" {
   spoke_route_table_id = var.germany_route_table
   spoke_region         = "eu-central-1"
 }
+
+
+module "france_peering" {
+  source = "../../modules/vpc_peering"
+  providers = {
+    aws       = aws.hub
+    aws.spoke = aws.france
+  }
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  hub_vpc_id         = module.hub_vpc.vpc_id
+  hub_vpc_cidr       = var.hub_vpc_cidr
+  hub_route_table_id = module.hub_vpc.private_route_table_id
+
+  spoke_vpc_id         = var.germany_vpc_id
+  spoke_vpc_cidr       = var.germany_cidr
+  spoke_route_table_id = var.germany_route_table
+  spoke_region         = "eu-central-1"
+}
