@@ -13,10 +13,22 @@ assume_role {
   }
 }
 
+ Germany Spoke
 provider "aws" {
-  alias  = "spoke"
-  region = var.spoke_region
-assume_role {
-    role_arn = var.spoke_role_arn
+  alias  = "germany"
+  region = "eu-central-1"
+
+  assume_role {
+    role_arn = var.germany_execution_role_arn
+  }
+}
+
+# France Spoke
+provider "aws" {
+  alias  = "france"
+  region = "eu-west-3"
+
+  assume_role {
+    role_arn = var.france_execution_role_arn
   }
 }
