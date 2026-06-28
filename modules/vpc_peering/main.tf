@@ -11,6 +11,7 @@ resource "aws_vpc_peering_connection" "mesh" {
 
 # 2. The Connection (Accepter - requires aliased provider in root)
 resource "aws_vpc_peering_connection_accepter" "mesh_accepter" {
+  provider = aws.spoke
   vpc_peering_connection_id = aws_vpc_peering_connection.mesh.id
   auto_accept               = true
 
@@ -27,6 +28,7 @@ resource "aws_vpc_peering_connection_options" "hub_dns" {
 }
 
 resource "aws_vpc_peering_connection_options" "spoke_dns" {
+  provider = aws.spoke
   vpc_peering_connection_id = aws_vpc_peering_connection.mesh.id
   accepter { allow_remote_vpc_dns_resolution = true }
   depends_on = [aws_vpc_peering_connection_accepter.mesh_accepter]
