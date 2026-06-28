@@ -1,15 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-
-      configuration_aliases = [
-        aws.spoke
-      ]
-    }
-  }
-}
-
 # ==========================================
 # 1. FOUNDATION: BASE VPCs
 # ==========================================
