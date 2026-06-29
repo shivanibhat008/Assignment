@@ -4,7 +4,7 @@
 variable "project_name" {
   description = "The primary project identifier."
   type        = string
-  default     = "protex"
+  default     = "assignment"
 }
 
 variable "environment" {
