@@ -8,8 +8,7 @@ module "hub_vpc" {
   project_name         = var.project_name
   environment          = var.environment
   vpc_cidr             = var.hub_vpc_cidr
-  private_subnet_cidrs = var.hub_private_subnets
-  availability_zones   = var.hub_azs
+  private_subnet_count = var.hub_private_subnet_count
 }
 
 
