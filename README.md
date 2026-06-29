@@ -62,9 +62,9 @@ This codebase adopts a modular, DRY layout, separating reusable factory definiti
 ```text
 .
 ├── modules/
-│   ├── vpc/                    # Multi-AZ VPC foundation, Subnets, Gateway Endpoints
+│   ├── networking/                    # Multi-AZ VPC foundation, Subnets, Gateway Endpoints
 │   ├── security/               # IAM Execution Roles, Zero-Trust Layer 4 Security Groups
-│   └── peering/                # Cross-Region Mesh, Route Injection, Cross-VPC DNS
+│   └── vpc_peering/                # Cross-Region Mesh, Route Injection, Cross-VPC DNS
 └── env/
     └── prod/                   # Live production deployment tier
         ├── backend.tf          # Partial backend configuration (S3/DynamoDB)
