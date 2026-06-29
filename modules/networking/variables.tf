@@ -13,14 +13,10 @@ variable "vpc_cidr" {
   type        = string
 }
 
-variable "private_subnet_cidrs" {
-  description = "A list of IPv4 CIDR blocks for the private subnets. Length must match availability_zones."
-  type        = list(string)
-}
-
-variable "availability_zones" {
-  description = "A list of Availability Zones to deploy the subnets into."
-  type        = list(string)
+variable "private_subnet_count" {
+  description = "Number of private subnets to create"
+  type        = number
+  default     = 2
 }
 
 variable "enable_dns_support" {
