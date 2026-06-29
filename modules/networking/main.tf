@@ -31,11 +31,13 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route_table_association" "private" {
-  count          = length(aws_subnet.private)
-  subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private.id
+    for_each = {
+      for subnet in aws_subnet.private :
+      subnet.id => subnet
+    }
+    subnet_id      = each.value.id
+    route_table_id = aws_route_table.private.id
 }
-
 # Dynamic Gateway Endpoint for DynamoDB
 data "aws_region" "current" {}
 
