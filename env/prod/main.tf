@@ -24,7 +24,6 @@ module "hub_security" {
   environment         = var.environment
   hub_vpc_id          = module.hub_vpc.vpc_id
   hub_vpc_cidr        = var.hub_vpc_cidr
-  spoke_vpc_id        = module.spoke_vpc.vpc_id
   dynamodb_table_name = var.dynamodb_table_name
 }
 
