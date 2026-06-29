@@ -65,8 +65,8 @@ module "france_peering" {
   hub_vpc_cidr       = var.hub_vpc_cidr
   hub_route_table_id = module.hub_vpc.private_route_table_id
 
-  spoke_vpc_id         = var.germany_vpc_id
-  spoke_vpc_cidr       = var.germany_cidr
-  spoke_route_table_id = var.germany_route_table
+  spoke_vpc_id         = var.france_vpc_id
+  spoke_vpc_cidr       = var.france_cidr
+  spoke_route_table_id = var.france_route_table
   spoke_region         = "eu-west-3"
 }
