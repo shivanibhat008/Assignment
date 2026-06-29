@@ -31,15 +31,10 @@ variable "hub_vpc_cidr" {
   type        = string
 }
 
-variable "hub_private_subnets" {
-  description = "A list of IPv4 CIDR blocks for the Hub's private subnets."
-  type        = list(string)
+variable "hub_private_subnet_count" {
+    type = number
 }
 
-variable "hub_azs" {
-  description = "A list of Availability Zones for the Hub deployment."
-  type        = list(string)
-}
 variable "hub_role_arn" {
   description = "IAM role assumed in the Hub AWS account"
   type        = string
@@ -62,12 +57,6 @@ variable "spoke_vpc_cidr" {
   type        = string
 }
 
-variable "spoke_private_subnets" {
-  description = "A list of IPv4 CIDR blocks for the Spoke's private subnets."
-  type        = list(string)
-}
-
-variable "spoke_azs" {
-  description = "A list of Availability Zones for the Spoke deployment."
-  type        = list(string)
+variable "spoke_private_subnet_count" {
+    type = number
 }
