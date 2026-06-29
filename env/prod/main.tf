@@ -2,7 +2,7 @@
 # 1. FOUNDATION: BASE VPCs
 # ==========================================
 module "hub_vpc" {
-  source = "../../modules/vpc"
+  source = "../../modules/networking"
   providers = { aws = aws.hub }
 
   project_name         = var.project_name
@@ -13,7 +13,7 @@ module "hub_vpc" {
 }
 
 module "spoke_vpc" {
-  source = "../../modules/vpc"
+  source = "../../modules/networking"
   providers = { aws = aws.spoke }
 
   project_name         = var.project_name
@@ -54,7 +54,7 @@ module "spoke_security" {
 # 3. TRANSIT: CROSS-REGION PEERING MESH
 # ==========================================
 module "transit_mesh" {
-  source = "../../modules/peering"
+  source = "../../modules/vpc_peering"
   # Passes default aws to hub, but explicitly requires the spoke provider for the Accepter
   providers = { aws = aws.hub }
 
