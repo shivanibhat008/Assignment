@@ -2,7 +2,7 @@
 # 1. FOUNDATION: BASE VPCs
 # ==========================================
 module "hub_vpc" {
-  source = "../../modules/vpc"
+  source = "../../modules/networking"
   providers = { aws = aws.hub }
 
   project_name         = var.project_name
